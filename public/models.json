@@ -1,0 +1,20 @@
+{
+  "models": [
+    {
+      "id": "school_pack",
+      "label": "School (ARQ + STR) — demo ThatOpen",
+      "fragments": [
+        {
+          "id": "school_arq",
+          "label": "Arquitectura",
+          "url": "https://thatopen.github.io/engine_components/resources/frags/school_arq.frag"
+        },
+        {
+          "id": "school_str",
+          "label": "Estructura",
+          "url": "https://thatopen.github.io/engine_components/resources/frags/school_str.frag"
+        }
+      ]
+    }
+  ]
+}

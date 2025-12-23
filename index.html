@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Visor BIM — Fase 2</title>
+  </head>
+  <body>
+    <div id="app">
+      <div id="viewer"></div>
+
+      <aside id="sidebar">
+        <section class="card">
+          <h2>Catálogo de modelos</h2>
+
+          <label class="field">
+            <span>URL de models.json</span>
+            <input id="catalogUrl" type="text" spellcheck="false" />
+          </label>
+
+          <div class="row">
+            <button id="reloadCatalogBtn" class="secondary">Actualizar catálogo</button>
+          </div>
+
+          <label class="field">
+            <span>Modelo</span>
+            <select id="modelSelect"></select>
+          </label>
+
+          <label class="checkbox">
+            <input id="replaceMode" type="checkbox" />
+            <span>Reemplazar escena (limpiar antes de cargar)</span>
+          </label>
+
+          <div class="row">
+            <button id="loadModelBtn">Cargar modelo</button>
+            <button id="clearModelsBtn" class="secondary">Vaciar modelos</button>
+          </div>
+
+          <div class="progress">
+            <progress id="progressBar" max="100" value="0"></progress>
+            <div id="statusText" class="status info">Listo.</div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Acciones</h2>
+          <div class="row">
+            <button id="zoomToFitBtn" class="secondary">Zoom to Fit</button>
+            <button id="toggleProjBtn" class="secondary">Ortho / Persp</button>
+          </div>
+          <div class="row">
+            <button id="isolateBtn" class="secondary">Isolate</button>
+            <button id="showAllBtn" class="secondary">Show All</button>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Selección</h2>
+          <div id="selectionInfo" class="small">Ninguna selección.</div>
+          <pre id="propsPanel" class="props">{}</pre>
+        </section>
+
+        <section class="card">
+          <h2>Categorías</h2>
+          <div id="categoriesPanel" class="small muted">Carga un modelo para ver categorías…</div>
+        </section>
+
+        <section class="card">
+          <h2>Modelos cargados</h2>
+          <div id="loadedModelsPanel" class="small muted">Ninguno.</div>
+        </section>
+      </aside>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
