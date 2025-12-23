@@ -1,4 +1,4 @@
-import { resolvePublicUrl } from "./url";
+import { resolvePublicUrl, resolveMaybeRelativeUrl } from "./url";
 
 export type Catalog = { models: CatalogModel[] };
 
@@ -19,9 +19,12 @@ export function defaultCatalogUrl(): string {
 }
 
 export async function loadCatalog(catalogUrl: string): Promise<Catalog> {
-  const res = await fetch(catalogUrl, { cache: "no-store" });
+  // ✅ acepta absoluto o relativo
+  const finalUrl = resolveMaybeRelativeUrl(catalogUrl);
+
+  const res = await fetch(finalUrl, { cache: "no-store" });
   if (!res.ok) {
-    throw new Error(`No se pudo cargar models.json (${catalogUrl}). HTTP ${res.status}`);
+    throw new Error(`No se pudo cargar models.json (${finalUrl}). HTTP ${res.status}`);
   }
 
   const raw = await res.json();

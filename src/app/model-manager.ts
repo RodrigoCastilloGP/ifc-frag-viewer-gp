@@ -24,7 +24,6 @@ export class ModelManager {
   private busy = false;
   private aborter: AbortController | null = null;
 
-  // ✅ NO usar "constructor(private ...)" con erasableSyntaxOnly
   private fragments: OBC.FragmentsManager;
 
   constructor(fragments: OBC.FragmentsManager) {
@@ -58,7 +57,6 @@ export class ModelManager {
 
   /** Elimina todos los modelos cargados. */
   async disposeAll() {
-    // ✅ snapshot de ids ANTES de borrar (evita iterar mientras mutas fragments.list)
     const ids: string[] = Array.from(this.fragments.list as any, (entry: any) => entry?.[0])
       .filter(Boolean)
       .map((x: any) => String(x));
@@ -110,6 +108,7 @@ export class ModelManager {
           continue;
         }
 
+        // ✅ AQUÍ se resuelve la ruta relativa del models.json a URL absoluta
         const url = resolveMaybeRelativeUrl(frag.url);
 
         report({
@@ -120,21 +119,26 @@ export class ModelManager {
           modelId,
         });
 
-        const buf = await fetchArrayBufferWithProgress(
-          url,
-          (f01) => {
-            report({
-              stage: "download",
-              message: `Descargando ${frag.label}… ${
-                f01 === null ? "(sin content-length)" : `${Math.round(f01 * 100)}%`
-              }`,
-              overall01: (i + (f01 ?? 0)) / frags.length,
-              file01: f01,
-              modelId,
-            });
-          },
-          signal,
-        );
+        let buf: ArrayBuffer;
+        try {
+          buf = await fetchArrayBufferWithProgress(
+            url,
+            (f01) => {
+              report({
+                stage: "download",
+                message: `Descargando ${frag.label}… ${
+                  f01 === null ? "(sin content-length)" : `${Math.round(f01 * 100)}%`
+                }`,
+                overall01: (i + (f01 ?? 0)) / frags.length,
+                file01: f01,
+                modelId,
+              });
+            },
+            signal,
+          );
+        } catch (e: any) {
+          throw new Error(`No se pudo descargar FRAG "${frag.label}" (${url}). ${e?.message ?? e}`);
+        }
 
         report({
           stage: "load",
@@ -144,7 +148,6 @@ export class ModelManager {
           modelId,
         });
 
-        // ✅ Más compatible: usar Uint8Array
         await this.fragments.core.load(new Uint8Array(buf), { modelId });
 
         this.registry.set(modelId, {
